@@ -13,7 +13,7 @@ const DashboardPage = () => {
           </h1>
         </div>
         {/* Options */}
-        <div className="w-full flex items-center justify-between gap-12">
+        <div className="flex gap-12 items-center justify-between w-full">
           <div className=" flex flex-col gap-2 font-light text-sm p-5 border border-[#555] rounded-2xl flex-1">
             <img src="/chat.png" alt="" className="w-10 h-10 object-cover" />
             <span>नयाँ च्याट</span>
@@ -29,12 +29,12 @@ const DashboardPage = () => {
         </div>
       </div>
       {/* Input form */}
-      <div className="flex mt-auto w-1/2 bg-[#2c2937] rounded-2xl">
-        <form className="w-full h-full flex items-center justify-between gap-5 mb-2">
+      <div className="flex  bg-[#2c2937] w-1/2 mt-auto rounded-2xl">
+        <form className="flex w-full h-full items-center justify-between gap-5 mb-2">
           <input
             type="text"
-            placeholder="Ask"
-            className="p-5 flex-1 border-none outline-none bg-transparent placeholer-gray-400 text-[#ececec]"
+            placeholder="प्रश्न सोध्नुहोस...."
+            className="p-5 flex-1 border-none outline-none bg-transparent placeholder-gray-400 text-[#ececec]"
           />
           <button
             type="submit"
@@ -44,7 +44,7 @@ const DashboardPage = () => {
             disabled={loading}
           >
             {loading ? (
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+              <div className="animate-spin border-b-2 h-4 w-4 rounded-full border-white"></div>
             ) : (
               <img src="/arrow.png" alt="" className="w-4 h-4" />
             )}
