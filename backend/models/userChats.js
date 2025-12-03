@@ -1,0 +1,30 @@
+import { mongoose } from "mongoose";
+
+const { Schema } = mongoose;
+
+const userChatsSchema = new Schema({
+  userId: {
+    type: String,
+    required: true,
+  },
+  chats: [
+    {
+      _id: {
+        type: String,
+        required: true,
+      },
+      title: {
+        type: String,
+        required: true,
+      },
+      createdAt: {
+        type: Date,
+        default: Date.now(),
+        required: true,
+      },
+    },
+  ],
+});
+
+export default mongoose.model.userChats ||
+  mongoose.model("userChats", userChatsSchema);
