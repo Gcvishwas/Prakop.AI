@@ -1,7 +1,21 @@
 import { useState } from "react";
-
+import { useAuth } from "@clerk/clerk-react";
 const DashboardPage = () => {
   const [loading, setLoading] = useState(false);
+  const { userId } = useAuth();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const text = e.target.text.value;
+    if (!text) return;
+    await fetch("http://localhost:3000/api/chats", {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ userId, text }),
+    });
+  };
   return (
     <div className="h-full flex flex-col items-center">
       <div className="flex flex-col flex-1 items-center justify-center  w-1/2 gap-12">
@@ -30,10 +44,14 @@ const DashboardPage = () => {
       </div>
       {/* Input form */}
       <div className="flex  bg-[#2c2937] w-1/2 mt-auto rounded-2xl">
-        <form className="flex w-full h-full items-center justify-between gap-5 mb-2">
+        <form
+          className="flex w-full h-full items-center justify-between gap-5 mb-2"
+          onSubmit={handleSubmit}
+        >
           <input
             type="text"
             placeholder="प्रश्न सोध्नुहोस...."
+            name="text"
             className="p-5 flex-1 border-none outline-none bg-transparent placeholder-gray-400 text-[#ececec]"
           />
           <button
