@@ -1,7 +1,8 @@
 import { Outlet, useNavigate } from "react-router-dom";
 import { useAuth } from "@clerk/clerk-react";
 import { useEffect } from "react";
-import ChatList  from "../../Components/chatList/ChatList";
+import ChatList from "../../Components/chatList/ChatList";
+import Loader from "../../Components/Loader";
 
 const DashboardLayout = () => {
   const { userId, isLoaded } = useAuth();
@@ -13,7 +14,7 @@ const DashboardLayout = () => {
     }
   }, [isLoaded, userId, navigate]);
 
-  if (!isLoaded) return "Loading...";
+  if (!isLoaded) return <Loader />;
 
   return (
     <div className="flex gap-[50px] pt-5 h-full">
