@@ -5,6 +5,7 @@ import Chat from "./models/chat.js";
 import UserChats from "./models/userChats.js";
 import { clerkMiddleware, requireAuth } from "@clerk/express";
 import dotenv from "dotenv";
+
 dotenv.config();
 const port = process.env.PORT || 3000;
 const app = express();
@@ -13,8 +14,7 @@ app.use(clerkMiddleware());
 app.use(
   cors({
     origin: process.env.CLIENT_URL,
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true, // <--- this is required for cookies/auth
+    credentials: true,
   })
 );
 
@@ -89,7 +89,7 @@ app.get("/api/userChats", requireAuth(), async (req, res) => {
   }
 });
 
-app.get("/api/chats/:id", requireAuth(), async (req, res) => {
+app.get("/api/chat/:id", requireAuth(), async (req, res) => {
   const userId = req.auth().userId;
   try {
     const chat = await Chat.findOne({ _id: req.params.id, userId });
@@ -99,7 +99,7 @@ app.get("/api/chats/:id", requireAuth(), async (req, res) => {
     res.status(500).send("Error displaying chat");
   }
 });
-app.put("/api/chats/:id", requireAuth(), async (req, res) => {
+app.put("/api/chat/:id", requireAuth(), async (req, res) => {
   const userId = req.auth().userId;
   const { question, answer } = req.body;
 
@@ -134,10 +134,6 @@ app.put("/api/chats/:id", requireAuth(), async (req, res) => {
     res.status(500).send("Error updating conversation");
   }
 });
-app.get("/", (req, res) => {
-  res.send("Server is up");
-});
-
 app.listen(port, () => {
   connect();
   console.log("Server running on port 3000");
