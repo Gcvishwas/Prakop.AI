@@ -7,23 +7,11 @@ import { clerkMiddleware, requireAuth } from "@clerk/express";
 const port = process.env.PORT || 3000;
 const app = express();
 app.use(clerkMiddleware());
-const allowedOrigins = [
-  "http://localhost:5173",
-  "https://prakop-ai-v63t.vercel.app",
-];
 
 app.use(
   cors({
-    origin: function (origin, callback) {
-      if (!origin) return callback(null, true);
-
-      if (allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      } else {
-        return callback(new Error("Not allowed by CORS"));
-      }
-    },
-    credentials: true,
+    origin: process.env.CLIENT_URL, // must match your frontend
+    credentials: true, // <--- this is required for cookies/auth
   })
 );
 
