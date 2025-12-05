@@ -89,7 +89,7 @@ app.get("/api/userChats", requireAuth(), async (req, res) => {
   }
 });
 
-app.get("/api/chat/:id", requireAuth(), async (req, res) => {
+app.get("/api/chats/:id", requireAuth(), async (req, res) => {
   const userId = req.auth().userId;
   try {
     const chat = await Chat.findOne({ _id: req.params.id, userId });
@@ -99,7 +99,7 @@ app.get("/api/chat/:id", requireAuth(), async (req, res) => {
     res.status(500).send("Error displaying chat");
   }
 });
-app.put("/api/chat/:id", requireAuth(), async (req, res) => {
+app.put("/api/chats/:id", requireAuth(), async (req, res) => {
   const userId = req.auth().userId;
   const { question, answer } = req.body;
 
