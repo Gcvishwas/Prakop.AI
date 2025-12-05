@@ -32,7 +32,7 @@ const ChatList = () => {
         {isLoading ? (
           <Loader />
         ) : error ? (
-          "Something went wrong"
+          "No chats found"
         ) : (
           data?.map((chat) => (
             <Link
