@@ -13,6 +13,7 @@ app.use(clerkMiddleware());
 app.use(
   cors({
     origin: process.env.CLIENT_URL,
+    methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true, // <--- this is required for cookies/auth
   })
 );
