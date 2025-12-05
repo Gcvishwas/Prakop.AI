@@ -4,13 +4,15 @@ import mongoose from "mongoose";
 import Chat from "./models/chat.js";
 import UserChats from "./models/userChats.js";
 import { clerkMiddleware, requireAuth } from "@clerk/express";
+import dotenv from "dotenv";
+dotenv.config();
 const port = process.env.PORT || 3000;
 const app = express();
 app.use(clerkMiddleware());
 
 app.use(
   cors({
-    origin: "https://prakop-ai.vercel.app",
+    origin: process.env.CLIENT_URL,
     credentials: true, // <--- this is required for cookies/auth
   })
 );
