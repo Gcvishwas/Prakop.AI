@@ -10,7 +10,7 @@ app.use(clerkMiddleware());
 
 app.use(
   cors({
-    origin: process.env.CLIENT_URL, // must match your frontend
+    origin: "https://prakop-ai.vercel.app",
     credentials: true, // <--- this is required for cookies/auth
   })
 );
