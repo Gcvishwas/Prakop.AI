@@ -131,6 +131,10 @@ app.put("/api/chat/:id", requireAuth(), async (req, res) => {
     res.status(500).send("Error updating conversation");
   }
 });
+app.get("/", (req, res) => {
+  res.send("Server is up");
+});
+
 app.listen(port, () => {
   connect();
   console.log("Server running on port 3000");
