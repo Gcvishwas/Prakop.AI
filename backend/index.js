@@ -102,20 +102,10 @@ app.get("/api/chat/:id", requireAuth(), async (req, res) => {
 app.put("/api/chat/:id", requireAuth(), async (req, res) => {
   const userId = req.auth().userId;
   const { question, answer } = req.body;
-
-  // Build newItems conditionally. Do NOT push an empty model message.
-  const newItems = [];
-  if (typeof question !== "undefined" && question !== null) {
-    newItems.push({ role: "user", parts: [{ text: question }] });
-  }
-  if (typeof answer !== "undefined" && answer !== null) {
-    // Only push model message when there's a real answer
-    newItems.push({ role: "model", parts: [{ text: answer }] });
-  }
-
-  if (newItems.length === 0) {
-    return res.status(400).send("Nothing to update");
-  }
+  const newItems = [
+    ...(question ? [{ role: "user", parts: [{ text: question }] }] : []),
+    { role: "model", parts: [{ text: answer }] },
+  ];
 
   try {
     const updateChat = await Chat.updateOne(
