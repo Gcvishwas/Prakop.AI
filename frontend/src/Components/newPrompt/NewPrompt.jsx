@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { ai, MODEL_NAME, safetySettings } from "../../lib/gemini";
+import model from "../../lib/gemini";
 import Markdown from "react-markdown";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 const NewPrompt = ({ data }) => {
@@ -7,8 +7,20 @@ const NewPrompt = ({ data }) => {
   const [answer, setAnswer] = useState("");
   const endRef = useRef(null);
   const formRef = useRef(null);
+  const processedChats = useRef(new Set());
+
+  const chat = model.startChat({
+    history:
+      data?.history?.map(({ role, parts }) => ({
+        role,
+        parts: [{ text: parts?.[0]?.text || "" }],
+      })) || [],
+    generationConfig: {
+      // maxOutputTokens: 100,
+    },
+  });
   useEffect(() => {
-    endRef.current.scrollIntoView({ behavior: "smooth" });
+    endRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [data, question, answer]);
   const queryClient = useQueryClient();
   const mutation = useMutation({
@@ -16,9 +28,7 @@ const NewPrompt = ({ data }) => {
       return fetch(`${import.meta.env.VITE_API_URL}/api/chat/${data._id}`, {
         method: "PUT",
         credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           question: question.length ? question : undefined,
           answer,
@@ -26,77 +36,87 @@ const NewPrompt = ({ data }) => {
       }).then((res) => res.json());
     },
     onSuccess: () => {
-      // Invalidate and refetch
-      queryClient
-        .invalidateQueries({ queryKey: ["chat", data._id] })
-        .then(() => {
-          formRef.current.reset();
-          setQuestion("");
-          setAnswer("");
-        });
+      // Clear temporary state first
+      setQuestion("");
+      setAnswer("");
+
+      // Then invalidate to refetch and show updated history
+      queryClient.invalidateQueries({ queryKey: ["chat", data._id] });
+    },
+    onError: (err) => {
+      console.log(err);
     },
   });
+
   const add = async (text, isInitial) => {
-    if (!isInitial) setQuestion(text);
-    const prompt = `Your job is to answer queries in Nepali.Reply only in Nepali.Ensure the text is coherent, natural, and relevant to disasters in Nepal.Each answer should be of 15 sentences at max.If irrelevant, respond:"मसँग विपद्सँग सम्बन्धित सीमित जानकारी मात्र छ। अन्य प्रश्नहरूको लागि इन्टरनेट हेर्नुहोस्।"If the question is not in Nepali, respond:"कृपया नेपाली भाषामा प्रश्न सोध्नुहोस्।"User Question:${text}
+    const prompt = `
+Your job is to answer queries in Nepali.
+Reply only in Nepali. Ensure the text is coherent, natural, and relevant to disasters in Nepal.
+Each answer should be at most 10 sentences.
+If irrelevant, respond: "मसँग विपद्सँग सम्बन्धित सीमित जानकारी मात्र छ। अन्य प्रश्नहरूको लागि इन्टरनेट हेर्नुहोस्।"
+If the question is not in Nepali, respond: "कृपया नेपाली भाषामा प्रश्न सोध्नुहोस्।"
+User Question: ${text}
 `;
-    const response = await ai.models.generateContentStream({
-      model: MODEL_NAME,
-      contents: prompt,
-      config: {
-        safetySettings: safetySettings,
-      },
-    });
-    for await (const chunk of response) {
-      setAnswer((prev) => prev + chunk.text);
+
+    if (!isInitial) setQuestion(text);
+
+    try {
+      const result = await chat.sendMessageStream([prompt]);
+      let accumulatedText = "";
+      for await (const chunk of result.stream) {
+        const chunkText = chunk.text();
+        accumulatedText += chunkText;
+        setAnswer(accumulatedText);
+      }
+      mutation.mutate();
+    } catch (err) {
+      console.log("Error in add():", err);
     }
-    mutation.mutate();
   };
-  // const chat = ai.chats.create({
-  //   model: MODEL_NAME,
-  //   history: [
-  //     {
-  //       role: "user",
-  //       parts: [{ text: "Hello" }],
-  //     },
-  //     {
-  //       role: "model",
-  //       parts: [{ text: "Great to meet you. What would you like to know?" }],
-  //     },
-  //   ],
-  // });
-  const handleSubmit = async (e) => {
+
+  const handleSubmit = (e) => {
     e.preventDefault();
     const text = e.target.text.value;
     if (!text) return;
-    add(text);
+
+    // Clear input immediately
+    formRef.current.reset();
+
+    add(text, false);
   };
 
+  // Handle initial message - only run once per chat ID
   useEffect(() => {
-    if (data?.history?.length === 1) {
+    const chatId = data?._id;
+
+    if (
+      chatId &&
+      data?.history?.length === 1 &&
+      !processedChats.current.has(chatId)
+    ) {
+      processedChats.current.add(chatId);
       add(data.history[0].parts[0].text, true);
     }
-  }, [data]);
+  }, [data?._id, data?.history?.length]);
+
   return (
     <>
       {question && (
-        <div className="bg-[#2c2937] rounded-2xl max-w-[80%] self-end mt-2 p-5">
+        <div className="bg-[#3a3a3a] rounded-2xl max-w-[80%] p-4 mt-2 self-end">
           {question}
         </div>
       )}
       {answer && (
-        <div className="bg-[#2c2937] rounded-2xl max-w-[80%] self-start mt-2 p-5">
+        <div className="bg-[#3a3a3a] rounded-2xl max-w-[80%] p-4 mt-2 self-start">
           <Markdown>{answer}</Markdown>
         </div>
       )}
       <div className="pb-[100px]" ref={endRef}>
-        {/* Form */}
         <form
           ref={formRef}
           className="w-1/2 absolute bottom-3 bg-[#2c2937] rounded-2xl flex items-center px-4"
           onSubmit={handleSubmit}
         >
-          {/* input */}
           <input
             type="text"
             name="text"
