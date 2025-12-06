@@ -1,20 +1,25 @@
-import { GoogleGenAI } from "@google/genai";
+import {
+  GoogleGenerativeAI,
+  HarmBlockThreshold,
+  HarmCategory,
+} from "@google/generative-ai";
 
-const GEN_KEY = import.meta.env.VITE_GEN_KEY;
-export const safetySettings = [
+const safetySetting = [
   {
-    category: "HARM_CATEGORY_HARASSMENT",
-    threshold: "BLOCK_LOW_AND_ABOVE",
+    category: HarmCategory.HARM_CATEGORY_HARASSMENT,
+    threshold: HarmBlockThreshold.BLOCK_LOW_AND_ABOVE,
   },
   {
-    category: "HARM_CATEGORY_HATE_SPEECH",
-    threshold: "BLOCK_LOW_AND_ABOVE",
-  },
-  {
-    category: "HARM_CATEGORY_DANGEROUS_CONTENT",
-    threshold: "BLOCK_LOW_AND_ABOVE",
+    category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
+    threshold: HarmBlockThreshold.BLOCK_LOW_AND_ABOVE,
   },
 ];
-export const ai = new GoogleGenAI({ apiKey: GEN_KEY });
 
-export const MODEL_NAME = "gemini-2.5-flash";
+const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEN_KEY);
+
+const model = genAI.getGenerativeModel({
+  model: "gemini-2.5-flash",
+  safetySetting,
+});
+
+export default model;
