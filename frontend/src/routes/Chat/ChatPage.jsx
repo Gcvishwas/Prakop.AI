@@ -3,17 +3,26 @@ import NewPrompt from "../../Components/newPrompt/NewPrompt";
 import { useLocation } from "react-router";
 import Markdown from "react-markdown";
 import Loader from "../../Components/Loader";
-
+import { useAuth } from "@clerk/clerk-react";
 const ChatPage = () => {
+  const { getToken } = useAuth();
   const path = useLocation().pathname;
   const chatId = path.split("/").pop();
 
   const { isLoading, error, data } = useQuery({
     queryKey: ["chat", chatId],
-    queryFn: () =>
-      fetch(`${import.meta.env.VITE_API_URL}/api/chat/${chatId}`, {
-        credentials: "include",
-      }).then((res) => res.json()),
+    queryFn: async () => {
+      const token = await getToken();
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/chat/${chatId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return res.json();
+    },
   });
 
   return (

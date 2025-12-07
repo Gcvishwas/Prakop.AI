@@ -1,14 +1,20 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router";
 import Loader from "../Loader";
-
+import { useAuth } from "@clerk/clerk-react";
 const ChatList = () => {
+  const { getToken } = useAuth();
   const { isLoading, error, data } = useQuery({
     queryKey: ["userChats"],
-    queryFn: () =>
-      fetch(`${import.meta.env.VITE_API_URL}/api/userChats`, {
-        credentials: "include",
-      }).then((res) => res.json()),
+    queryFn: async () => {
+      const token = await getToken();
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/userChats`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return res.json();
+    },
   });
 
   return (
