@@ -13,7 +13,7 @@ app.use(clerkMiddleware());
 
 app.use(
   cors({
-    origin: process.env.CLIENT_URL, // Add fallback
+    origin: process.env.CLIENT_URL,
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
@@ -29,9 +29,6 @@ const connect = async () => {
     console.log(err);
   }
 };
-app.get("/", (req, res) => {
-  res.send("Backend OK");
-});
 
 app.post("/api/chats", requireAuth(), async (req, res) => {
   const userId = req.auth().userId;
