@@ -2,7 +2,9 @@ import { useEffect, useRef, useState } from "react";
 import model from "../../lib/gemini";
 import Markdown from "react-markdown";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useAuth } from "@clerk/clerk-react";
 const NewPrompt = ({ data }) => {
+  const { getToken } = useAuth();
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
   const endRef = useRef(null);
@@ -16,24 +18,23 @@ const NewPrompt = ({ data }) => {
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
-    mutationFn: ({ questionText, answerText }) => {
-      questionText, answerText;
+    mutationFn: async ({ questionText, answerText }) => {
+      const token = await getToken();
 
       return fetch(`${import.meta.env.VITE_API_URL}/api/chat/${data._id}`, {
         method: "PUT",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify({
           question: questionText?.length ? questionText : undefined,
           answer: answerText,
         }),
       }).then((res) => res.json());
     },
-    onSuccess: async (responseData) => {
-      // Wait for the refetch to complete
+    onSuccess: async () => {
       await queryClient.refetchQueries({ queryKey: ["chat", data._id] });
-
-      // Only then clear the temporary state
       setQuestion("");
       setAnswer("");
     },
