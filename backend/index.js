@@ -29,6 +29,9 @@ const connect = async () => {
     console.log(err);
   }
 };
+app.get("/", (req, res) => {
+  res.send("Backend is running!");
+});
 
 app.post("/api/chats", requireAuth(), async (req, res) => {
   const userId = req.auth().userId;
