@@ -9,42 +9,36 @@ const NewPrompt = ({ data }) => {
   const formRef = useRef(null);
   const processedChats = useRef(new Set());
 
-  const chat = model.startChat({
-    history:
-      data?.history?.map(({ role, parts }) => ({
-        role,
-        parts: [{ text: parts?.[0]?.text || "" }],
-      })) || [],
-    generationConfig: {
-      // maxOutputTokens: 100,
-    },
-  });
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [data, question, answer]);
+
   const queryClient = useQueryClient();
+
   const mutation = useMutation({
-    mutationFn: () => {
+    mutationFn: ({ questionText, answerText }) => {
+      questionText, answerText;
+
       return fetch(`${import.meta.env.VITE_API_URL}/api/chat/${data._id}`, {
         method: "PUT",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          question: question.length ? question : undefined,
-          answer,
+          question: questionText?.length ? questionText : undefined,
+          answer: answerText,
         }),
       }).then((res) => res.json());
     },
-    onSuccess: () => {
-      // Clear temporary state first
+    onSuccess: async (responseData) => {
+      // Wait for the refetch to complete
+      await queryClient.refetchQueries({ queryKey: ["chat", data._id] });
+
+      // Only then clear the temporary state
       setQuestion("");
       setAnswer("");
-
-      // Then invalidate to refetch and show updated history
-      queryClient.invalidateQueries({ queryKey: ["chat", data._id] });
     },
     onError: (err) => {
-      console.log(err);
+      console.log("Save error:", err);
     },
   });
 
@@ -61,6 +55,17 @@ User Question: ${text}
     if (!isInitial) setQuestion(text);
 
     try {
+      const chat = model.startChat({
+        history:
+          data?.history?.map(({ role, parts }) => ({
+            role,
+            parts: [{ text: parts?.[0]?.text || "" }],
+          })) || [],
+        generationConfig: {
+          // maxOutputTokens: 100,
+        },
+      });
+
       const result = await chat.sendMessageStream([prompt]);
       let accumulatedText = "";
       for await (const chunk of result.stream) {
@@ -68,7 +73,12 @@ User Question: ${text}
         accumulatedText += chunkText;
         setAnswer(accumulatedText);
       }
-      mutation.mutate();
+
+      // Pass the actual values directly to mutation
+      mutation.mutate({
+        questionText: isInitial ? undefined : text,
+        answerText: accumulatedText,
+      });
     } catch (err) {
       console.log("Error in add():", err);
     }
