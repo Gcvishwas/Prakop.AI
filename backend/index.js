@@ -9,7 +9,6 @@ import dotenv from "dotenv";
 dotenv.config();
 const port = process.env.PORT || 3000;
 const app = express();
-app.use(clerkMiddleware());
 
 app.use(
   cors({
@@ -21,6 +20,20 @@ app.use(
 );
 
 app.use(express.json());
+
+app.get("/api/contacts", async (req, res) => {
+  try {
+    const contacts = await mongoose.connection.db
+      .collection("emergency-contacts")
+      .find({})
+      .toArray();
+    res.status(200).json(contacts);
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("Error fetching the contacts");
+  }
+});
+app.use(clerkMiddleware());
 const connect = async () => {
   try {
     await mongoose.connect(process.env.MONGO_URL);
@@ -127,6 +140,27 @@ app.put("/api/chat/:id", requireAuth(), async (req, res) => {
   } catch (err) {
     console.log(err);
     res.status(500).send("Error updating conversation");
+  }
+});
+app.delete("/api/chat/:id", requireAuth(), async (req, res) => {
+  const userId = req.auth().userId;
+  const chatId = req.params.id;
+  try {
+    await Chat.deleteOne({ _id: chatId, userId });
+    const updateUserChat = await UserChats.updateOne(
+      { userId },
+      {
+        $pull: {
+          chats: {
+            _id: chatId,
+          },
+        },
+      }
+    );
+    res.status(200).send(updateUserChat);
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("Error deleting");
   }
 });
 app.listen(port, () => {
