@@ -26,13 +26,16 @@ const Header = () => {
             <Link to="/" className="hover:text-white transition">
               गृहपृष्ठ
             </Link>
-            <Link to="/" className="hover:text-white transition">
+            <Link to="/explore" className="hover:text-white transition">
               अन्वेषण
             </Link>
-            <Link to="/" className="text-red-400 hover:text-white transition">
+            <Link
+              to="/emergency"
+              className="text-red-400 hover:text-white transition"
+            >
               आकस्मिक सम्पर्क
             </Link>
-            <Link to="/" className="hover:text-white transition">
+            <Link to="/dashboard" className="hover:text-white transition">
               च्याटबोट
             </Link>
           </nav>
