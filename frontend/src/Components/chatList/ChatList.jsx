@@ -1,9 +1,12 @@
-import { useQuery } from "@tanstack/react-query";
-import { Link } from "react-router";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Link, useLocation } from "react-router";
 import Loader from "../Loader";
 import { useAuth } from "@clerk/clerk-react";
 const ChatList = () => {
   const { getToken } = useAuth();
+  const path = useLocation().pathname;
+  const chatId = path.split("/").pop();
+  const queryClient = useQueryClient();
   const { isLoading, error, data } = useQuery({
     queryKey: ["userChats"],
     queryFn: async () => {
@@ -16,6 +19,27 @@ const ChatList = () => {
       return res.json();
     },
   });
+
+  const deleteMutation = useMutation({
+    mutationFn: async () => {
+      const token = await getToken();
+      await fetch(`${import.meta.env.VITE_API_URL}/api/chat/${chatId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["userChats"]);
+    },
+  });
+
+  const handleDelete = (chatId) => {
+    if (confirm("Delete this chat?")) {
+      deleteMutation.mutate(chatId);
+    }
+  };
 
   return (
     <div className="flex flex-col h-full">
@@ -41,13 +65,15 @@ const ChatList = () => {
           "No chats found"
         ) : (
           data?.map((chat) => (
-            <Link
-              to={`dashboard/chats/${chat._id}`}
-              className="p-1.5 rounded-[10px] hover:bg-[#2c2937]"
+            <div
               key={chat._id}
+              className="flex items-center justify-between p-1.5 rounded-[10px] hover:bg-[#2c2937]"
             >
-              {chat.title}
-            </Link>
+              <Link to={`dashboard/chats/${chat._id}`} key={chat._id}>
+                {chat.title}
+              </Link>
+              <button onClick={() => handleDelete(chat._id)}>X</button>
+            </div>
           ))
         )}
       </div>
