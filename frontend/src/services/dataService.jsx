@@ -18,7 +18,7 @@ export const fetchEarthquakes = async () => {
 
 export const fetchWeather = async (lat, lon) => {
   try {
-    const API_KEY = "7576ca584023095cd04c2d36626a9090";
+    const API_KEY = import.meta.env.VITE_OPEN_WEATHER_KEY;
     const response = await fetch(
       `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`
     );
