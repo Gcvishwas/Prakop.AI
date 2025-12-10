@@ -1,5 +1,3 @@
-import { SignedIn, UserButton } from "@clerk/clerk-react";
-import React, { useState } from "react";
 import { Link, useLocation } from "react-router";
 import MobileMenu from "./MobileMenu";
 
@@ -8,7 +6,7 @@ const Header = () => {
   const isDashboardRoute = location.pathname.startsWith("/dashboard");
   return (
     <div>
-      <header className="flex items-center justify-between relative animate-slidedown">
+      <header className="flex items-center justify-between relative animate-slideDown">
         {/* Logo */}
         <Link
           to="/"
