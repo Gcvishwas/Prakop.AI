@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-import LocationDropdown from "./LocationDropdown";
-
+import LocationDropdown from "../Explore-Components/LocationDropDown";
 const LocationSelector = ({ selectedLocation, onLocationChange }) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
