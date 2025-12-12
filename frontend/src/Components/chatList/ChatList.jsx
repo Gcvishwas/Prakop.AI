@@ -45,7 +45,7 @@ const ChatList = () => {
     <div className="flex flex-col h-full">
       <span className="title font-semibold text-[10px] mb-2.5">DASHBOARD</span>
       <Link to="/dashboard" className="p-2.5 rounded-[10px] hover:bg-[#2c2937]">
-        Create a new Chat
+        नयाँ च्याट
       </Link>
       <Link to="/explore" className="p-2.5 rounded-[10px] hover:bg-[#2c2937]">
         अन्वेषण
