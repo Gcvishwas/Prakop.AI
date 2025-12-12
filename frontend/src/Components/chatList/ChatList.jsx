@@ -47,11 +47,11 @@ const ChatList = () => {
       <Link to="/dashboard" className="p-2.5 rounded-[10px] hover:bg-[#2c2937]">
         Create a new Chat
       </Link>
-      <Link to="/" className="p-2.5 rounded-[10px] hover:bg-[#2c2937]">
-        Explore
+      <Link to="/explore" className="p-2.5 rounded-[10px] hover:bg-[#2c2937]">
+        अन्वेषण
       </Link>
-      <Link to="/" className="p-2.5 rounded-[10px] hover:bg-[#2c2937]">
-        Contact
+      <Link to="/emergency" className="p-2.5 rounded-[10px] hover:bg-[#2c2937]">
+        सम्पर्क
       </Link>
       <hr className="border-none h-[2px] bg-[#ddd] opacity-10 rounded-[5px] my-5" />
       {/* Recent Chats */}
