@@ -13,8 +13,8 @@ This project is suitable for academic use (CSIT internship / project) as well as
 - AI-powered responses using Google Gemini API  
 - User authentication and session management with Clerk  
 - Chat history storage for logged-in users  
-- Public chat access without login  
-- Responsive and clean UI using Tailwind CSS  
+- Responsive and clean UI using Tailwind CSS
+- Emergency contacts
 - RESTful backend API  
 - Persistent data storage using MongoDB  
 
