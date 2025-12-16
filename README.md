@@ -85,3 +85,14 @@ This project is suitable for academic submission, and as a strong **AI + Full-St
 ```bash
 git clone https://github.com/Gcvishwas/Prakop.AI.git
 cd Prakop.AI
+cd frontend
+npm install
+```
+### 💻Backend Setup
+cd backend
+npm install
+
+### Create .env file in both Frontend and Backedn directories
+
+
+
