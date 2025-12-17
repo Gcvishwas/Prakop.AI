@@ -129,17 +129,21 @@ Prakop.AI/
 ```
 
 ### 🤝 Contributing
+• Fork or clone repository
+• Create your feature branch
 ```bash
-Fork or clone repository
-Create your feature branch
 git checkout -b feature/YourFeature
-Commit changes
+```
+• Commit changes
+```bash
 git commit -m "Add new feature"
-Push
+```
+• Push changes
+```bash
 git push origin feature/YourFeature
 ```
 
-###📜 License
+### 📜 License
 
 Distributed under the
 <a href="https://mit-license.org/">MIT License</a>.
