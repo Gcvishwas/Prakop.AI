@@ -93,6 +93,55 @@ cd backend
 npm install
 
 ### Create .env file in both Frontend and Backedn directories
+## Backend .env
+```bash
+PORT=5000
+MONGODB_URI=your_mongodb_connection_string
+GEMINI_API_KEY=your_gemini_api_key
+CLERK_SECRET_KEY=your_clerk_secret_key
+```
+## Frontend .env
+```bash
+VITE_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
+VITE_BACKEND_URL=http://localhost:5000
+```
 
+### Project Structure
+```bash
+Prakop.AI/
+├── frontend/
+│   ├── src/
+│   │   ├── components/     # Reusable UI components
+│   │   ├── layouts/        # Public & authenticated layouts
+│   │   ├── pages/          # Page-level components
+│   │   ├── routes/         # App routing
+│   │   ├── services/       # API & query logic
+│   │   └── utils/          # Helper functions
+│   ├── index.html
+│   └── package.json
+│
+├── backend/
+│   ├── index.js
+│   ├── models/             # MongoDB schemas
+│   └── package.json
+│
+└── README.md
+```
 
+### 🤝 Contributing
+```bash
+Fork or clone repository
+Create your feature branch
+git checkout -b feature/YourFeature
+Commit changes
+git commit -m "Add new feature"
+Push
+git push origin feature/YourFeature
+```
+
+###📜 License
+
+Distributed under the
+<a href="https://mit-license.org/">MIT License</a>.
+See LICENSE for more information.
 
