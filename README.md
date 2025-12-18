@@ -1,7 +1,7 @@
 # Prakop.AI – Nepali Disaster Response Chatbot 🌏🚨  
 # Site Live At 👉🏻 <a href="https://prakop-ai.vercel.app">प्रकोप.AI</a>
 
-[![License: Apache]((https://img.shields.io/badge/License-Apache_2.0-blue.svg))
+[![License: Apache](https://img.shields.io/badge/License-Apache_2.0-blue.svg)
 [![React](https://img.shields.io/badge/React-18.x-blue?logo=react)](https://reactjs.org)
 [![Node.js](https://img.shields.io/badge/Node.js-Express-green?logo=node.js)](https://nodejs.org)
 [![MongoDB](https://img.shields.io/badge/MongoDB-Database-brightgreen?logo=mongodb)](https://mongodb.com)
