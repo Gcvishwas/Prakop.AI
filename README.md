@@ -149,3 +149,5 @@ Distributed under the
 <a href="https://mit-license.org/">MIT License</a>.
 See LICENSE for more information.
 
+### 👤 Author
+Vishwas Gharti Chhetri
